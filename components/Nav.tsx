@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useNavContext } from "@/components/NavContext";
 
 const NAV = [
   {
@@ -61,10 +62,13 @@ function HoverStar({ filled }: { filled?: boolean }) {
     <span
       style={{
         display: "inline-block",
+        fontFamily: "'Bit', monospace",
         animation: "nav-star-in 120ms ease-in forwards, nav-spin 800ms linear infinite",
-        marginLeft: "0.15em",
+        marginLeft: "0.25em",
         fontSize: "0.9em",
         color: "#111",
+        position: "relative",
+        top: "-3px",
       }}
     >
       {filled ? "✦" : "✧"}
@@ -109,8 +113,12 @@ export default function Nav() {
     setOpen(activeParent);
   }, [pathname]);
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+  const { pendingHref } = useNavContext();
+
+  const isActive = (href: string) => {
+    const current = pendingHref ?? pathname;
+    return current === href || current.startsWith(href + "/");
+  };
 
   const toggle = (href: string) =>
     setOpen((prev) => (prev === href ? null : href));
@@ -125,8 +133,8 @@ export default function Nav() {
             </NavButton>
             {open === href && (
               <div className="nav-dropdown" style={{ paddingLeft: "1.5rem", marginTop: "0.5rem", marginBottom: "1rem" }}>
-                {sub.map((s) => (
-                  <NavLink key={s.href} href={s.href} active={isActive(s.href)} style={styles.sublink}>
+                {sub.map((s, i) => (
+                  <NavLink key={s.href} href={s.href} active={isActive(s.href)} style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
                     {s.label}
                   </NavLink>
                 ))}

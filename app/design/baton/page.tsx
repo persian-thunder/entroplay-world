@@ -1,4 +1,3 @@
-import Nav from "@/components/Nav";
 import VideoFeed, { VideoItem } from "@/components/VideoFeed";
 import { design } from "../data";
 import { notFound } from "next/navigation";
@@ -14,28 +13,23 @@ export default function BatonPage() {
   ];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", height: "100%" }}>
-      <div style={{ position: "sticky", top: 0, height: "100vh", padding: "2.8rem 2.5rem 3rem 3rem" }}>
-        <Nav />
+    <div style={{ padding: "2.8rem 3rem 4rem 0", overflowY: "auto", height: "100%" }}>
+      <div style={{ fontSize: "1.9rem", lineHeight: "2rem", color: "#111", marginBottom: "3rem", letterSpacing: ".075px" }}>
+        {ex.description.split("\n\n").map((para, i) => (
+          <p key={i} style={{ marginBottom: "1rem" }}>{para}</p>
+        ))}
+        {ex.credits && (
+          <p>
+            {ex.credits.map((c, i) => (
+              <span key={i}>
+                {c.role}: {c.name}
+                {i < ex.credits!.length - 1 && <br />}
+              </span>
+            ))}
+          </p>
+        )}
       </div>
-      <div style={{ padding: "2.8rem 3rem 4rem 0", overflowY: "auto" }}>
-        <div style={{ fontSize: "1.9rem", lineHeight: "2rem", color: "#111", marginBottom: "3rem", letterSpacing: ".075px" }}>
-          {ex.description.split("\n\n").map((para, i) => (
-            <p key={i} style={{ marginBottom: "1rem" }}>{para}</p>
-          ))}
-          {ex.credits && (
-            <p>
-              {ex.credits.map((c, i) => (
-                <span key={i}>
-                  {c.role}: {c.name}
-                  {i < ex.credits!.length - 1 && <br />}
-                </span>
-              ))}
-            </p>
-          )}
-        </div>
-        <VideoFeed videos={items} />
-      </div>
+      <VideoFeed videos={items} />
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Nav from "@/components/Nav";
 import PageTransition from "@/components/PageTransition";
+import { LeftSlotProvider, LeftSlotContent } from "@/components/LeftSlot";
+import { NavContextProvider } from "@/components/NavContext";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -16,37 +19,62 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main
-          style={{
-            position: "relative",
-            width: "100vw",
-            maxWidth: "1800px",
-            margin: "0 auto",
-            height: "100vh",
-            overflow: "hidden",
-            backgroundImage: "url('/bg.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <PageTransition>{children}</PageTransition>
-          <Link
-            href="/"
+        <NavContextProvider>
+        <LeftSlotProvider>
+          <main
             style={{
-              position: "fixed",
-              bottom: "1.5rem",
-              left: "1.5rem",
-              zIndex: 1000,
-              fontSize: "2rem",
-              color: "#111",
-              textDecoration: "none",
-              display: "inline-block",
-              animation: "home-spin 3s linear infinite",
+              position: "relative",
+              width: "100vw",
+              maxWidth: "2400px",
+              margin: "0 auto",
+              height: "100vh",
+              overflow: "hidden",
+              backgroundImage: "url('/bg.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              display: "grid",
+              gridTemplateColumns: "1fr 1.6fr",
             }}
           >
-            ✦
-          </Link>
-        </main>
+            {/* Left — persistent nav, never fades */}
+            <div
+              style={{
+                position: "sticky",
+                top: 0,
+                height: "100vh",
+                minHeight: 0,
+                padding: "2.8rem 2.5rem 3rem 3rem",
+                zIndex: 1,
+                overflowY: "auto",
+              }}
+            >
+              <Nav />
+              <LeftSlotContent />
+            </div>
+
+            {/* Right — fades on navigation */}
+            <PageTransition>{children}</PageTransition>
+
+            <Link
+              href="/"
+              style={{
+                position: "fixed",
+                bottom: "1rem",
+                left: "2rem",
+                zIndex: 1000,
+                fontFamily: "'Bit', monospace",
+                fontSize: "4rem",
+                color: "#111",
+                textDecoration: "none",
+                display: "inline-block",
+                animation: "home-spin .9s linear infinite",
+              }}
+            >
+              ✦
+            </Link>
+          </main>
+        </LeftSlotProvider>
+        </NavContextProvider>
       </body>
     </html>
   );

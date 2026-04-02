@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavContext } from "@/components/NavContext";
 
 const DUR = 300;
 
@@ -10,20 +11,23 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [opacity, setOpacity] = useState(0);
   const pending = useRef<string | null>(null);
+  const { setPendingHref } = useNavContext();
 
-  // Fade in whenever the page changes
+  // Fade in whenever the page changes, clear pending href
   useEffect(() => {
+    setPendingHref(null);
     setOpacity(0);
     const raf = requestAnimationFrame(() =>
       requestAnimationFrame(() => setOpacity(1))
     );
     return () => cancelAnimationFrame(raf);
-  }, [pathname]);
+  }, [pathname, setPendingHref]);
 
   const navigate = useCallback(
     (href: string) => {
       if (href === pathname) return;
       pending.current = href;
+      setPendingHref(href);
       setOpacity(0);
       setTimeout(() => {
         if (pending.current) {
@@ -56,6 +60,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
         transition: `opacity ${DUR}ms ease`,
         height: "100%",
         width: "100%",
+        minHeight: 0,
+        overflow: "hidden",
       }}
     >
       {children}
