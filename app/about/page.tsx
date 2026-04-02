@@ -22,11 +22,11 @@ const bio = (
     <p>
       Armon Naeini is an Iranian-American artist, creative technologist, designer and educator.
       His work and research engages metaphysical inquiry through emerging technologies, exploring the
-      ecstacy and absurdity embedded in human experience. Armon leverages various programming languages to develop his work including interactive exhibits, AR applications, real-time graphics, LED sculptures, post-processing, experimental web, and custom hardware.
+      ecstacy and absurdity embedded in human experience. Armon leverages various programming languages to develop his work including immersive installations, AR/XR applications, real-time graphics, LED design, post-production, web experiences, and microcomputing.
       <br /><br />
-      Currently, Armon is a professor at the School of Visual Arts teaching
-      creative code to juniors & seniors in the BFA Design program. He is also currently working
-      as a freelance product designer & developer.
+      Currently, Armon is a professor at the School of Visual Arts instructing
+      creative code to juniors & seniors in the BFA Design department. He is also currently working
+      as a freelance product designer & design technologist.
       <br /><br />
       Armon has exhibited his work at The Music Center LA, Secret Riso
       Club, ZeroSpace, Meow Wolf, Center for Performance Research, NYU,
