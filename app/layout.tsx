@@ -46,7 +46,7 @@ export default function RootLayout({
                 top: 0,
                 height: "100vh",
                 minHeight: 0,
-                padding: "2.8rem 2.5rem 3rem 3rem",
+                padding: "4rem 2.5rem 3rem 3rem",
                 zIndex: 1,
                 overflowY: "auto",
               }}

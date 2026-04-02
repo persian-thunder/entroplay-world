@@ -4,7 +4,8 @@ import { useRef, useCallback, useEffect } from "react";
 
 const TRAIL = 10;
 const LERPS = [0.16, 0.14, 0.12, 0.11, 0.10, 0.09, 0.09, 0.08, 0.08, 0.07];
-const SRC = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1774730002/output_d6ptsb.webm";
+const SRC_WEBM = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1774730002/output_d6ptsb.webm";
+const SRC_MOV = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1775169141/output-safari_rmccqx.mov";
 
 export default function Home() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -92,10 +93,13 @@ export default function Home() {
               objectFit: "cover",
               border: "4px solid #111",
               transform: "scaleX(-1)",
+              // background: "transparent",         // ← explicit
+
               display: "block",
             }}
           >
-            <source src={SRC} type="video/webm" />
+            <source src={SRC_MOV} type="video/mp4" />
+            <source src={SRC_WEBM} type="video/webm" />
           </video>
         </div>
       ))}

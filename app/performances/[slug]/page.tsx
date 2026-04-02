@@ -17,7 +17,7 @@ export default function PerformancePage({ params }: { params: { slug: string } }
   ];
 
   return (
-    <div style={{ padding: "2.8rem 3rem 4rem 0", overflowY: "auto", height: "100%" }}>
+    <div style={{ padding: "4rem 3rem 4rem 0", overflowY: "auto", height: "100%" }}>
       <div style={{ fontSize: "1.9rem", lineHeight: "2rem", color: "#111", marginBottom: "3rem", letterSpacing: ".075px" }}>
         {ex.description.split("\n\n").map((para, i) => (
           <p key={i} style={{ marginBottom: "1rem" }}>{para}</p>
