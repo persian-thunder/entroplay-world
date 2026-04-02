@@ -45,7 +45,7 @@ const bio = (
       {" · "}
       <a href="https://github.com/persian-thunder" target="_blank" rel="noopener noreferrer" style={linkStyle}>Github</a>
       {" · "}
-      <a href="mailto:armon@entroplay.world" style={linkStyle}>Email</a>
+      <a href="mailto:armon@entroplay.world" target="_blank" rel="noopener noreferrer" style={linkStyle}>Email</a>
     </p>
   </div>
 );
@@ -60,7 +60,7 @@ export default function About() {
         <img
           src="/me.png"
           alt="Armon Naeini"
-          style={{ height: "94vh", width: "auto", display: "block" }}
+          style={{ maxHeight: "94vh", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", alignSelf: "flex-end" }}
         />
       </div>
     </>

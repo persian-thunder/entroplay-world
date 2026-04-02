@@ -107,7 +107,6 @@ function NavButton({ onClick, active, children, style }: { onClick: () => void; 
 export default function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState<string | null>(null);
-
   useEffect(() => {
     const activeParent = NAV.find(({ sub }) => sub?.some((s) => pathname === s.href || pathname.startsWith(s.href + "/")))?.href ?? null;
     setOpen(activeParent);
@@ -123,30 +122,34 @@ export default function Nav() {
   const toggle = (href: string) =>
     setOpen((prev) => (prev === href ? null : href));
 
+  const navItems = (
+    NAV.map(({ label, href, sub }) =>
+      sub ? (
+        <div key={href}>
+          <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button}>
+            {label}
+          </NavButton>
+          {open === href && (
+            <div className="nav-dropdown" style={{ paddingLeft: "1.5rem", marginTop: "0.5rem", marginBottom: "1rem" }}>
+              {sub.map((s, i) => (
+                <NavLink key={s.href} href={s.href} active={isActive(s.href)} style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
+                  {s.label}
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <NavLink key={href} href={href} active={isActive(href)} style={styles.link}>
+          {label}
+        </NavLink>
+      )
+    )
+  );
+
   return (
     <nav style={{ fontFamily: "'Bit', monospace", fontSize: "4rem" }}>
-{NAV.map(({ label, href, sub }) =>
-        sub ? (
-          <div key={href}>
-            <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button}>
-              {label}
-            </NavButton>
-            {open === href && (
-              <div className="nav-dropdown" style={{ paddingLeft: "1.5rem", marginTop: "0.5rem", marginBottom: "1rem" }}>
-                {sub.map((s, i) => (
-                  <NavLink key={s.href} href={s.href} active={isActive(s.href)} style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
-                    {s.label}
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <NavLink key={href} href={href} active={isActive(href)} style={styles.link}>
-            {label}
-          </NavLink>
-        )
-      )}
+      {navItems}
     </nav>
   );
 }

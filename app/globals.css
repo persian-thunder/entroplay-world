@@ -45,6 +45,26 @@ p {
   font-family: "Mondwest", serif;
 }
 
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  body > * { display: none !important; }
+
+  body::after {
+    content: "open me on desktop ;)";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg);
+    font-family: "Mondwest", serif;
+    font-size: 2rem;
+    color: var(--fg);
+    text-align: center;
+    padding: 2rem;
+  }
+}
+
 @keyframes home-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }

@@ -46,6 +46,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
       if (!anchor) return;
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto")) return;
+      if (anchor.target === "_blank") return;
       e.preventDefault();
       navigate(href);
     };
