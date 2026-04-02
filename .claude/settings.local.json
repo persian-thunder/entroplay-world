@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install three @react-three/fiber @react-three/drei @types/three --legacy-peer-deps)",
+      "Bash(osascript -e 'tell application \"\"Terminal\"\":*)",
+      "Bash(pkill -f \"next dev\")"
+    ]
+  }
+}
