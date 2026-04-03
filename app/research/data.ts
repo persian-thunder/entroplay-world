@@ -12,7 +12,7 @@ export const research: Record<string, Research> = {
     augmentation: {
         title: "Self Augmentation",
         year: "",
-        description: "I have a deep fascination with my own self, especially my physical appearance. I just want to augment it all.",
+        description: "Shadow work",
         images: [],
         videos: [
             
