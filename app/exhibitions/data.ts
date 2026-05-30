@@ -18,7 +18,8 @@ export const exhibitions: Record<string, Exhibition> = {
             { role: "Creative Director", name: "Katherine Helen Fisher" },
         ],
         images: [],
-        videos: [   { vimeoId: "1177067554" },
+        videos: [   { vimeoId: "1196991085" },
+                    { vimeoId: "1177067554" },
                     { vimeoId: "1177069862" }
                 ],
     },

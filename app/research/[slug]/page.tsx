@@ -22,6 +22,13 @@ export default function ResearchPage({ params }: { params: { slug: string } }) {
         {ex.description.split("\n\n").map((para, i) => (
           <p key={i} style={{ marginBottom: "1rem" }}>{para}</p>
         ))}
+        {ex.link && (
+          <p style={{ marginTop: "1rem" }}>
+            <a href={ex.link.url} target="_blank" rel="noopener noreferrer" style={{ color: "#111", textDecoration: "underline" }}>
+              {ex.link.label}
+            </a>
+          </p>
+        )}
         {ex.credits && (
           <p>
             {ex.credits.map((c, i) => (

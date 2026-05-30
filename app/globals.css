@@ -36,6 +36,20 @@ body,
   width: 100%;
 }
 
+/* ── Hide scrollbars (cross-browser) ── */
+html {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / legacy Edge */
+}
+html::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Edge, Opera */
+}
+* {
+  scrollbar-width: none;        /* Firefox — nested scroll containers */
+  -ms-overflow-style: none;
+}
+
 body {
   background-color: var(--bg);
   color: var(--fg);

@@ -3,6 +3,7 @@ export type Research = {
     year: string;
     description: string;
     credits?: { role: string; name: string }[];
+    link?: { label: string; url: string };
     images: string[];
     videos?: { vimeoId: string; title?: string; caption?: string }[];
     youtubeIds?: string[];
@@ -15,8 +16,9 @@ export const research: Record<string, Research> = {
         description: "Shadow work",
         images: [],
         videos: [
-            
-            { vimeoId: "1175997425" }, 
+
+            { vimeoId: "1193665328" },
+            { vimeoId: "1175997425" },
             { vimeoId: "1135407035" },
             { vimeoId: "1178488927" },
             { vimeoId: "1177079489" },
@@ -50,6 +52,16 @@ export const research: Record<string, Research> = {
             { vimeoId: "892410351" },
             { vimeoId: "893587636" },
         ]
+    },
+    charttty: {
+        title: "charttty",
+        year: "",
+        description: "Real-time ASCII render + editor in your terminal. Super fun passion project I’ve been working on recently. Now live on my GitHub, pls go install and play. MacOS + Linux only. Learn trig ;)",
+        link: { label: "GitHub", url: "https://github.com/persian-thunder/chartty" },
+        images: [],
+        videos: [
+            { vimeoId: "1196109011" },
+        ],
     },
     datamosh: {
         title: "Datamosh",
