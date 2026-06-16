@@ -17,7 +17,7 @@ const NAV = [
       { label: "Self Augmentation", href: "/research/augmentation" },
       { label: "Datamosh", href: "/research/datamosh" },
       { label: "Vector Synthesis", href: "/research/vector" },
-      { label: "charttty", href: "/research/charttty" },
+      { label: "chartty", href: "/research/charttty" },
     ],
   },
    {

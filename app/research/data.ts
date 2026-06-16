@@ -54,7 +54,7 @@ export const research: Record<string, Research> = {
         ]
     },
     charttty: {
-        title: "charttty",
+        title: "chartty",
         year: "",
         description: "Real-time ASCII render + editor in your terminal. Super fun passion project I’ve been working on recently. Now live on my GitHub, pls go install and play. MacOS + Linux only. Learn trig ;)",
         link: { label: "GitHub", url: "https://github.com/persian-thunder/chartty" },
