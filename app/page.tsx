@@ -18,6 +18,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // Pick source per-browser: only Safari decodes the HEVC .mov with its alpha
+    // channel intact. Firefox/Zen on macOS can also decode HEVC via the OS but
+    // ignores the alpha (renders black), so it — and Chrome — must get the WebM.
+    const ua = navigator.userAgent;
+    const isSafari = /^((?!chrome|chromium|android|crios|fxios|firefox).)*safari/i.test(ua);
+    const src = isSafari ? SRC_MOV : SRC_WEBM;
+    for (let i = 0; i < TRAIL; i++) {
+      const v = videoRefs.current[i];
+      if (v && v.src !== src) {
+        v.src = src;
+        v.load();
+        v.play().catch(() => {});
+      }
+    }
+
     const cx = window.innerWidth * 0.75;
     const cy = window.innerHeight * 0.5;
     mouseRef.current = { x: cx, y: cy };
@@ -97,10 +112,8 @@ export default function Home() {
 
               display: "block",
             }}
-          >
-            <source src={SRC_MOV} type="video/mp4" />
-            <source src={SRC_WEBM} type="video/webm" />
-          </video>
+          />
+          {/* src is set per-browser in the mount effect (Safari → .mov, others → .webm) */}
         </div>
       ))}
     </>
