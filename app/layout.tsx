@@ -36,7 +36,7 @@ export default function RootLayout({
               backgroundSize: "cover",
               backgroundPosition: "center",
               display: "grid",
-              gridTemplateColumns: "1fr 1.6fr",
+              gridTemplateColumns: "1.15fr 1.6fr",
             }}
           >
             {/* Left — persistent nav, never fades */}

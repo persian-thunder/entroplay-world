@@ -11,8 +11,8 @@ const linkStyle: React.CSSProperties = {
 const bio = (
   <div
     style={{
-      fontSize: "1.3rem",
-      lineHeight: "1.5rem",
+      fontSize: "1.15rem",
+      lineHeight: "1.35rem",
       color: "#111",
       paddingRight: "0%",
       letterSpacing: ".1px",
