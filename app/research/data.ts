@@ -60,6 +60,7 @@ export const research: Record<string, Research> = {
         link: { label: "GitHub", url: "https://github.com/persian-thunder/chartty" },
         images: [],
         videos: [
+            { vimeoId: "1205276208" },
             { vimeoId: "1196109011" },
         ],
     },
