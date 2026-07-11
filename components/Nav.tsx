@@ -58,18 +58,24 @@ const NAV = [
 ];
 
 
-function HoverStar({ filled }: { filled?: boolean }) {
+function HoverStar({ filled, gap = "0.25em", top = "1px" }: { filled?: boolean; gap?: string; top?: string }) {
   return (
     <span
       style={{
-        display: "inline-block",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "1em",
+        height: "1em",
+        lineHeight: 1,
+        transformOrigin: "50% 44%",
         fontFamily: "'Bit', monospace",
-        animation: "nav-star-in 120ms ease-in forwards, nav-spin 800ms linear infinite",
-        marginLeft: "0.25em",
+        animation: "nav-star-in 120ms ease-in forwards, nav-spin 1100ms linear infinite",
+        marginLeft: gap,
         fontSize: "0.9em",
         color: "#111",
         position: "relative",
-        top: "-3px",
+        top,
       }}
     >
       {filled ? "✦" : "✧"}
@@ -77,7 +83,7 @@ function HoverStar({ filled }: { filled?: boolean }) {
   );
 }
 
-function NavLink({ href, active, children, style }: { href: string; active?: boolean; children: React.ReactNode; style: React.CSSProperties }) {
+function NavLink({ href, active, children, style, gap, starTop }: { href: string; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string; starTop?: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
@@ -86,12 +92,12 @@ function NavLink({ href, active, children, style }: { href: string; active?: boo
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} />}
+      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} top={starTop} />}
     </Link>
   );
 }
 
-function NavButton({ onClick, active, children, style }: { onClick: () => void; active?: boolean; children: React.ReactNode; style: React.CSSProperties }) {
+function NavButton({ onClick, active, children, style, gap }: { onClick: () => void; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <button
@@ -100,7 +106,7 @@ function NavButton({ onClick, active, children, style }: { onClick: () => void; 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} />}
+      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} />}
     </button>
   );
 }
@@ -127,13 +133,13 @@ export default function Nav() {
     NAV.map(({ label, href, sub }) =>
       sub ? (
         <div key={href}>
-          <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button}>
+          <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button} gap="0.1em">
             {label}
           </NavButton>
           {open === href && (
             <div className="nav-dropdown" style={{ paddingLeft: "1.5rem", marginTop: "0.5rem", marginBottom: "1rem" }}>
               {sub.map((s, i) => (
-                <NavLink key={s.href} href={s.href} active={isActive(s.href)} style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
+                <NavLink key={s.href} href={s.href} active={isActive(s.href)} starTop="-4px" style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
                   {s.label}
                 </NavLink>
               ))}
@@ -141,7 +147,7 @@ export default function Nav() {
           )}
         </div>
       ) : (
-        <NavLink key={href} href={href} active={isActive(href)} style={styles.link}>
+        <NavLink key={href} href={href} active={isActive(href)} style={styles.link} gap="0.1em">
           {label}
         </NavLink>
       )

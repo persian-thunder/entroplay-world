@@ -69,8 +69,14 @@ export default function RootLayout({
                 fontSize: "4rem",
                 color: "#111",
                 textDecoration: "none",
-                display: "inline-block",
-                animation: "home-spin .9s linear infinite",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "1em",
+                height: "1em",
+                lineHeight: 1,
+                transformOrigin: "50% 44%",
+                animation: "home-spin 1.1s linear infinite",
               }}
             >
               ✦
