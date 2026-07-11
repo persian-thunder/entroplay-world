@@ -11,32 +11,30 @@ const NAV = [
     href: "/about",
   },
   {
-    label: "Research",
-    href: "/research",
-    sub: [
-      { label: "Self Augmentation", href: "/research/augmentation" },
-      { label: "Datamosh", href: "/research/datamosh" },
-      { label: "Vector Synthesis", href: "/research/vector" },
-      { label: "chartty", href: "/research/charttty" },
-    ],
-  },
-   {
     label: "Art",
     href: "/art",
     sub: [
-      { label: "Real-time", href: "/art/generative" },
       { label: "Experimental Video", href: "/art/experimental" },
+      { label: "Real-time", href: "/art/generative" },
+    ],
+  },
+  {
+    label: "Design",
+    href: "/design",
+    sub: [
+      { label: "Baton", href: "/design/baton" },
+      { label: "Rare Candy", href: "/design/rare-candy" },
     ],
   },
   {
     label: "Exhibitions",
     href: "/exhibitions",
     sub: [
-      { label: "ID Pt. III", href: "/exhibitions/id3" },
-      { label: "ID Pt. II", href: "/exhibitions/id2" },
       { label: "DTHRR", href: "/exhibitions/dthrr" },
-      { label: "Resonance, Self", href: "/exhibitions/resonance" },
+      { label: "ID Pt. II", href: "/exhibitions/id2" },
+      { label: "ID Pt. III", href: "/exhibitions/id3" },
       { label: "Meow Wolf", href: "/exhibitions/meow" },
+      { label: "Resonance, Self", href: "/exhibitions/resonance" },
     ],
   },
   {
@@ -47,12 +45,14 @@ const NAV = [
       { label: "ID Pt. I", href: "/performances/id" },
     ],
   },
-   {
-    label: "Design",
-    href: "/design",
+  {
+    label: "Research",
+    href: "/research",
     sub: [
-      { label: "Baton", href: "/design/baton" },
-      { label: "Rare Candy", href: "/design/rare-candy" },
+      { label: "chartty", href: "/research/charttty" },
+      { label: "Datamosh", href: "/research/datamosh" },
+      { label: "Self Augmentation", href: "/research/augmentation" },
+      { label: "Vector Synthesis", href: "/research/vector" },
     ],
   },
 ];
