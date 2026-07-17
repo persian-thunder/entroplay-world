@@ -5,7 +5,8 @@ export type GenerativeVideo = {
 };
 
 export const generativeVideos: GenerativeVideo[] = [
-    
+
+    {vimeoId: "1210848253"},
     {vimeoId: "1176337795"},
     {vimeoId: "1176285401"},
     {vimeoId: "1176283957"},
