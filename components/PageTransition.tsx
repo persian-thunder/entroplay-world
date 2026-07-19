@@ -56,13 +56,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   return (
     <div
+      className="page-transition"
       style={{
         opacity,
         transition: `opacity ${DUR}ms ease`,
-        height: "100%",
-        width: "100%",
-        minHeight: 0,
-        overflow: "hidden",
       }}
     >
       {children}

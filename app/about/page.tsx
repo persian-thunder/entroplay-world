@@ -9,16 +9,7 @@ const linkStyle: React.CSSProperties = {
 };
 
 const bio = (
-  <div
-    style={{
-      fontSize: "1.15rem",
-      lineHeight: "1.35rem",
-      color: "#111",
-      paddingRight: "0%",
-      letterSpacing: ".1px",
-      marginTop: "2rem",
-    }}
-  >
+  <div className="about-copy">
     <p>
       Armon Naeini is an Iranian-American artist, creative technologist, designer and educator.
       His work and research engages metaphysical inquiry through emerging technologies, exploring the
@@ -55,13 +46,9 @@ export default function About() {
     <>
       <SetLeftSlot>{bio}</SetLeftSlot>
       {/* Right column — photo */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end", height: "100%" }}>
+      <div className="about-photo">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/me.png"
-          alt="Armon Naeini"
-          style={{ maxHeight: "94vh", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", alignSelf: "flex-end" }}
-        />
+        <img src="/me.png" alt="Armon Naeini" />
       </div>
     </>
   );
