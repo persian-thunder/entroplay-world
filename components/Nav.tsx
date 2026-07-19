@@ -101,6 +101,7 @@ function NavButton({ onClick, active, children, style, gap }: { onClick: () => v
   const [hovered, setHovered] = useState(false);
   return (
     <button
+      type="button"
       onClick={onClick}
       style={{ ...style, transform: hovered ? "scale(1.1)" : "scale(1)", transformOrigin: "left center", transition: "transform 150ms ease" }}
       onMouseEnter={() => setHovered(true)}
@@ -137,7 +138,7 @@ export default function Nav() {
             {label}
           </NavButton>
           {open === href && (
-            <div className="nav-dropdown" style={{ paddingLeft: "1.5rem", marginTop: "0.5rem", marginBottom: "1rem" }}>
+            <div className="nav-dropdown nav-sublist">
               {sub.map((s, i) => (
                 <NavLink key={s.href} href={s.href} active={isActive(s.href)} starTop="-4px" style={{ ...styles.sublink, animationDelay: `${i * 40}ms`, animation: "nav-dropdown 350ms cubic-bezier(0.16, 1, 0.3, 1) both", opacity: 0 }}>
                   {s.label}
@@ -155,7 +156,7 @@ export default function Nav() {
   );
 
   return (
-    <nav style={{ fontFamily: "'Bit', monospace", fontSize: "4rem" }}>
+    <nav className="site-nav" style={{ fontFamily: "'Bit', monospace", fontSize: "var(--nav-size)" }}>
       {navItems}
     </nav>
   );
@@ -181,7 +182,7 @@ const styles = {
   sublink: {
     display: "block",
     fontFamily: "'Mondwest', serif",
-    fontSize: "2.5rem",
+    fontSize: "var(--nav-sub-size)",
     color: "#111",
     textDecoration: "none",
     lineHeight: 1.1,

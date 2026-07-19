@@ -24,60 +24,18 @@ export default function RootLayout({
       <body>
         <NavContextProvider>
         <LeftSlotProvider>
-          <main
-            style={{
-              position: "relative",
-              width: "100vw",
-              maxWidth: "2400px",
-              margin: "0 auto",
-              height: "100vh",
-              overflow: "hidden",
-              backgroundImage: "url('/bg.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              display: "grid",
-              gridTemplateColumns: "1.15fr 1.6fr",
-            }}
-          >
-            {/* Left — persistent nav, never fades */}
-            <div
-              style={{
-                position: "sticky",
-                top: 0,
-                height: "100vh",
-                minHeight: 0,
-                padding: "4rem 2.5rem 3rem 3rem",
-                zIndex: 1,
-                overflowY: "auto",
-              }}
-            >
+          <main className="site-shell">
+            <div className="site-sidebar">
               <Nav />
               <LeftSlotContent />
             </div>
 
-            {/* Right — fades on navigation */}
             <PageTransition>{children}</PageTransition>
 
             <Link
               href="/"
-              style={{
-                position: "fixed",
-                bottom: "1rem",
-                left: "2rem",
-                zIndex: 1000,
-                fontFamily: "'Bit', monospace",
-                fontSize: "4rem",
-                color: "#111",
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "1em",
-                height: "1em",
-                lineHeight: 1,
-                transformOrigin: "50% 44%",
-                animation: "home-spin 1.1s linear infinite",
-              }}
+              aria-label="Home"
+              className="home-mark"
             >
               ✦
             </Link>

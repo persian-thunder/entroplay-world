@@ -19,6 +19,8 @@
 :root {
   --bg: #E6E8E6;
   --fg: #111111;
+  --nav-size: 4rem;
+  --nav-sub-size: 2.5rem;
 }
 
 *,
@@ -53,29 +55,271 @@ html::-webkit-scrollbar,
 body {
   background-color: var(--bg);
   color: var(--fg);
+  overflow: hidden;
 }
 
 p {
   font-family: "Mondwest", serif;
 }
 
-/* ── Mobile ── */
-@media (max-width: 768px) {
-  body > * { display: none !important; }
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
 
-  body::after {
-    content: "open me on desktop ;)";
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    inset: 0;
-    background-color: var(--bg);
-    font-family: "Mondwest", serif;
-    font-size: 2rem;
-    color: var(--fg);
-    text-align: center;
-    padding: 2rem;
+.site-shell {
+  position: relative;
+  width: 100vw;
+  max-width: 2400px;
+  margin: 0 auto;
+  height: 100vh;
+  overflow: hidden;
+  background-image: url("/bg.png");
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  grid-template-columns: 1.15fr 1.6fr;
+}
+
+.site-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 0;
+  padding: 4rem 2.5rem 3rem 3rem;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.site-nav {
+  --nav-size: 4rem;
+  --nav-sub-size: 2.5rem;
+}
+
+.nav-sublist {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.page-transition {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.home-mark {
+  position: fixed;
+  bottom: 1rem;
+  left: 2rem;
+  z-index: 1000;
+  font-family: "Bit", monospace;
+  font-size: 4rem;
+  color: #111;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  transform-origin: 50% 44%;
+  animation: home-spin 1.1s linear infinite;
+}
+
+.work-page {
+  padding: 4rem 3rem 4rem 0;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.work-copy {
+  font-size: 1.9rem;
+  line-height: 2rem;
+  color: #111;
+  margin-bottom: 3rem;
+  letter-spacing: .075px;
+}
+
+.about-copy {
+  font-size: 1.15rem;
+  line-height: 1.35rem;
+  color: #111;
+  padding-right: 0;
+  letter-spacing: .1px;
+  margin-top: 2rem;
+}
+
+.about-photo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.about-photo img {
+  max-height: 94vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  align-self: flex-end;
+}
+
+.media-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.media-items {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.media-items--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.media-list-item {
+  margin-bottom: 2.75rem;
+}
+
+.media-frame,
+.media-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #eee;
+  overflow: hidden;
+}
+
+.media-frame iframe,
+.media-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.media-thumb img {
+  object-fit: cover;
+}
+
+.media-image {
+  display: block;
+  width: 100%;
+  margin-bottom: 2.75rem;
+}
+
+.media-caption {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  html,
+  body,
+  #__next {
+    height: auto;
+    min-height: 100%;
+  }
+
+  body {
+    overflow: auto;
+  }
+
+  .site-shell {
+    width: 100%;
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible;
+    display: block;
+    background-attachment: fixed;
+  }
+
+  .site-sidebar {
+    position: relative;
+    height: auto;
+    padding: 1.25rem 1.25rem 1rem;
+    overflow: visible;
+  }
+
+  .site-nav {
+    --nav-size: 2.5rem;
+    --nav-sub-size: 1.65rem;
+  }
+
+  .nav-sublist {
+    padding-left: 1rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-transition {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .home-mark {
+    left: auto;
+    right: 0.85rem;
+    bottom: 0.75rem;
+    font-size: 2.7rem;
+  }
+
+  .work-page {
+    height: auto;
+    overflow: visible;
+    padding: 1.25rem 1.25rem 5rem;
+  }
+
+  .work-copy {
+    font-size: 1.35rem;
+    line-height: 1.45rem;
+    margin-bottom: 2rem;
+  }
+
+  .about-copy {
+    font-size: 1.05rem;
+    line-height: 1.25rem;
+    margin-top: 1.25rem;
+    max-width: 36rem;
+  }
+
+  .about-photo {
+    height: auto;
+    padding: 0 1.25rem 5rem;
+  }
+
+  .about-photo img {
+    width: min(100%, 28rem);
+    max-height: none;
+    margin-left: auto;
+  }
+
+  .media-controls {
+    justify-content: flex-start;
+  }
+
+  .media-items--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .media-list-item,
+  .media-image {
+    margin-bottom: 1.75rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-nav {
+    --nav-size: 2.25rem;
+    --nav-sub-size: 1.5rem;
   }
 }
 

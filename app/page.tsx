@@ -41,7 +41,13 @@ export default function Home() {
     const onMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
+    const onTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t) mouseRef.current = { x: t.clientX, y: t.clientY };
+    };
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchstart", onTouchMove, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
 
     let rafId: number;
     const animate = () => {
@@ -78,6 +84,8 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchstart", onTouchMove);
+      window.removeEventListener("touchmove", onTouchMove);
       cancelAnimationFrame(rafId);
     };
   }, []);

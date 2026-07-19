@@ -26,7 +26,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1.25rem" }}>
+      <div className="media-controls">
         <button
           onClick={() => switchView(false)}
           onMouseEnter={() => setHoverList(true)}
@@ -45,12 +45,10 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
         </button>
       </div>
 
-      <div style={{
-        ...(grid ? { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" } : {}),
-        opacity: visible ? 1 : 0,
-        transform: visible ? "scale(1)" : "scale(0.97)",
-        transition: "opacity 220ms ease, transform 220ms ease",
-      }}>
+      <div
+        className={`media-items${grid ? " media-items--grid" : ""}`}
+        style={{ opacity: visible ? 1 : 0, transform: visible ? "scale(1)" : "scale(0.97)" }}
+      >
         {videos.map((v, i) => {
           if (v.type === "image") {
             if (grid) {
