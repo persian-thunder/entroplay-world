@@ -52,9 +52,13 @@ export default function Home() {
     const canvas = canvasRef.current!;
     const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true });
     if (!gl) return;
+    // keep the context recoverable rather than letting a loss become permanent
+    const onLost = (e: Event) => e.preventDefault();
+    canvas.addEventListener("webglcontextlost", onLost);
 
     // one video element — decodes ONCE (off-DOM)
     const video = document.createElement("video");
+    video.crossOrigin = "anonymous"; // required to read cross-origin (Cloudinary) video into a WebGL texture
     video.muted = true;
     video.loop = true;
     video.playsInline = true;
@@ -177,9 +181,10 @@ export default function Home() {
       window.removeEventListener("mousemove", mm);
       window.removeEventListener("touchstart", tm);
       window.removeEventListener("touchmove", tm);
+      canvas.removeEventListener("webglcontextlost", onLost);
       video.pause();
-      video.src = "";
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      video.removeAttribute("src"); // stop the load without an "Invalid URI" error
+      video.load();
     };
   }, []);
 
