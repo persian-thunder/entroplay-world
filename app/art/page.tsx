@@ -1,12 +1,6 @@
-import SectionIndex from "@/components/SectionIndex";
+import { redirect } from "next/navigation";
 
+// No index view — jump straight to the first piece.
 export default function Page() {
-  return (
-    <SectionIndex
-      items={[
-        { title: "Experimental Video", href: "/art/experimental" },
-        { title: "Real-time", href: "/art/generative" },
-      ]}
-    />
-  );
+  redirect("/art/experimental");
 }

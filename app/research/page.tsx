@@ -1,15 +1,7 @@
-import SectionIndex from "@/components/SectionIndex";
+import { redirect } from "next/navigation";
 import { research } from "./data";
 
+// No index view — jump straight to the first piece.
 export default function Page() {
-  return (
-    <SectionIndex
-      items={Object.entries(research).map(([slug, w]) => ({
-        title: w.title,
-        href: `/research/${slug}`,
-        year: w.year,
-        teaser: w.description.split("\n\n")[0],
-      }))}
-    />
-  );
+  redirect(`/research/${Object.keys(research)[0]}`);
 }

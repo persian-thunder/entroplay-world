@@ -1,15 +1,7 @@
-import SectionIndex from "@/components/SectionIndex";
+import { redirect } from "next/navigation";
 import { performances } from "./data";
 
+// No index view — jump straight to the first piece.
 export default function Page() {
-  return (
-    <SectionIndex
-      items={Object.entries(performances).map(([slug, w]) => ({
-        title: w.title,
-        href: `/performances/${slug}`,
-        year: w.year,
-        teaser: w.description.split("\n\n")[0],
-      }))}
-    />
-  );
+  redirect(`/performances/${Object.keys(performances)[0]}`);
 }
