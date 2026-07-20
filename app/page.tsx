@@ -1,129 +1,197 @@
 "use client";
 
-import { useRef, useCallback, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const TRAIL = 10;
-const LERPS = [0.16, 0.14, 0.12, 0.11, 0.10, 0.09, 0.09, 0.08, 0.08, 0.07];
+const LERPS = [0.16, 0.14, 0.12, 0.11, 0.1, 0.09, 0.09, 0.08, 0.08, 0.07];
 const SRC_WEBM = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1774730002/output_d6ptsb.webm";
 const SRC_MOV = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1775169141/output-safari_rmccqx.mov";
 
-export default function Home() {
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const positionsRef = useRef<{ x: number; y: number }[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
+const HEIGHT_VH = 40; // video height as % of viewport height (matches the old "height: 40vh")
+const BORDER_PX = 4; // matches the old "4px solid #111"
+const INK: [number, number, number, number] = [0x11 / 255, 0x11 / 255, 0x11 / 255, 1];
 
-  const handleTimeUpdate = useCallback((v: HTMLVideoElement) => {
-    if (v.duration - v.currentTime <= 2.5) v.currentTime = 0;
-  }, []);
+const VERT = `#version 300 es
+in vec2 aPos;                 // unit quad, 0..1
+uniform vec2 uTranslate;      // top-left, CSS px
+uniform vec2 uSize;           // w,h, CSS px
+uniform vec2 uRes;            // viewport, CSS px
+uniform float uFlip;          // 1 = mirror X (scaleX(-1))
+out vec2 vUV;
+void main() {
+  vec2 px = uTranslate + aPos * uSize;
+  vec2 clip = (px / uRes) * 2.0 - 1.0;
+  gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
+  vUV = vec2(mix(aPos.x, 1.0 - aPos.x, uFlip), aPos.y);
+}`;
+
+const FRAG = `#version 300 es
+precision mediump float;
+in vec2 vUV;
+uniform sampler2D uTex;
+uniform int uMode;            // 0 = video texture, 1 = solid color
+uniform vec4 uColor;
+out vec4 o;
+void main() {
+  o = (uMode == 1) ? uColor : texture(uTex, vUV);   // alpha preserved
+}`;
+
+function compile(gl: WebGL2RenderingContext, type: number, src: string) {
+  const s = gl.createShader(type)!;
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+export default function Home() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const mouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Pick source per-browser: only Safari decodes the HEVC .mov with its alpha
-    // channel intact. Firefox/Zen on macOS can also decode HEVC via the OS but
-    // ignores the alpha (renders black), so it — and Chrome — must get the WebM.
+    const canvas = canvasRef.current!;
+    const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true });
+    if (!gl) return;
+    // keep the context recoverable rather than letting a loss become permanent
+    const onLost = (e: Event) => e.preventDefault();
+    canvas.addEventListener("webglcontextlost", onLost);
+
+    // one video element — decodes ONCE (off-DOM)
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous"; // required to read cross-origin (Cloudinary) video into a WebGL texture
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.autoplay = true;
     const ua = navigator.userAgent;
     const isSafari = /^((?!chrome|chromium|android|crios|fxios|firefox).)*safari/i.test(ua);
-    const src = isSafari ? SRC_MOV : SRC_WEBM;
-    for (let i = 0; i < TRAIL; i++) {
-      const v = videoRefs.current[i];
-      if (v && v.src !== src) {
-        v.src = src;
-        v.load();
-        v.play().catch(() => {});
-      }
-    }
+    video.src = isSafari ? SRC_MOV : SRC_WEBM;
+    video.play().catch(() => {});
 
-    const cx = window.innerWidth * 0.75;
-    const cy = window.innerHeight * 0.5;
-    mouseRef.current = { x: cx, y: cy };
-    positionsRef.current = Array.from({ length: TRAIL }, () => ({ x: cx, y: cy }));
+    // program + unit quad
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
 
-    const onMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+    const quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, "aPos");
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const U = (n: string) => gl.getUniformLocation(prog, n);
+    const uTranslate = U("uTranslate"), uSize = U("uSize"), uRes = U("uRes");
+    const uFlip = U("uFlip"), uMode = U("uMode"), uColor = U("uColor");
+
+    // video texture (re-uploaded once per frame)
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); // normal alpha-over → see-through stays
+
+    let W = 0, H = 0;
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + "px";
+      canvas.style.height = H + "px";
+      gl.viewport(0, 0, canvas.width, canvas.height);
     };
-    const onTouchMove = (e: TouchEvent) => {
+    resize();
+    window.addEventListener("resize", resize);
+
+    const cx = W * 0.75, cy = H * 0.5;
+    mouse.current = { x: cx, y: cy };
+    const pos = Array.from({ length: TRAIL }, () => ({ x: cx, y: cy }));
+
+    const onMove = (x: number, y: number) => (mouse.current = { x, y });
+    const mm = (e: MouseEvent) => onMove(e.clientX, e.clientY);
+    const tm = (e: TouchEvent) => {
       const t = e.touches[0];
-      if (t) mouseRef.current = { x: t.clientX, y: t.clientY };
+      if (t) onMove(t.clientX, t.clientY);
     };
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("touchstart", onTouchMove, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("mousemove", mm);
+    window.addEventListener("touchstart", tm, { passive: true });
+    window.addEventListener("touchmove", tm, { passive: true });
 
-    let rafId: number;
-    const animate = () => {
-      const mouse = mouseRef.current;
-      const positions = positionsRef.current;
+    const rect = (x: number, y: number, w: number, h: number) => {
+      gl.uniform2f(uTranslate, x, y);
+      gl.uniform2f(uSize, w, h);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    };
 
-      // Sync all trail videos to primary
-      const primary = videoRefs.current[0];
-      if (primary) {
-        for (let i = 1; i < TRAIL; i++) {
-          const v = videoRefs.current[i];
-          if (v && Math.abs(v.currentTime - primary.currentTime) > 0.05) {
-            v.currentTime = primary.currentTime;
-          }
-        }
-      }
-
+    let raf = 0;
+    const frame = () => {
+      // trail follow — identical lerp chain to the DOM version
       for (let i = 0; i < TRAIL; i++) {
-        const target = i === 0 ? mouse : positions[i - 1];
-        positions[i] = {
-          x: positions[i].x + (target.x - positions[i].x) * LERPS[i],
-          y: positions[i].y + (target.y - positions[i].y) * LERPS[i],
-        };
-        const el = wrapperRefs.current[i];
-        if (el) {
-          el.style.left = `${positions[i].x}px`;
-          el.style.top = `${positions[i].y}px`;
-        }
+        const t = i === 0 ? mouse.current : pos[i - 1];
+        pos[i].x += (t.x - pos[i].x) * LERPS[i];
+        pos[i].y += (t.y - pos[i].y) * LERPS[i];
       }
 
-      rafId = requestAnimationFrame(animate);
+      gl.clearColor(0, 0, 0, 0); // transparent — the page shows through
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(uRes, W, H);
+
+      const ready = video.readyState >= 2 && video.videoWidth > 0;
+      if (ready) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+
+      const h = (HEIGHT_VH / 100) * H;
+      const w = ready ? h * (video.videoWidth / video.videoHeight) : h;
+
+      // back (i = TRAIL-1) → front (i = 0), matching the old z-order
+      for (let i = TRAIL - 1; i >= 0; i--) {
+        const x = pos[i].x, y = pos[i].y; // top-left at the trail point, as before
+
+        // border frame — 4 solid #111 edges (keeps the cutout transparent inside)
+        gl.uniform1i(uMode, 1);
+        gl.uniform4fv(uColor, INK);
+        gl.uniform1f(uFlip, 0);
+        rect(x - BORDER_PX, y - BORDER_PX, w + 2 * BORDER_PX, BORDER_PX); // top
+        rect(x - BORDER_PX, y + h, w + 2 * BORDER_PX, BORDER_PX); // bottom
+        rect(x - BORDER_PX, y, BORDER_PX, h); // left
+        rect(x + w, y, BORDER_PX, h); // right
+
+        // the video copy (mirrored, alpha preserved)
+        if (ready) {
+          gl.uniform1i(uMode, 0);
+          gl.uniform1f(uFlip, 1);
+          rect(x, y, w, h);
+        }
+      }
+      raf = requestAnimationFrame(frame);
     };
-    rafId = requestAnimationFrame(animate);
+    raf = requestAnimationFrame(frame);
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchstart", onTouchMove);
-      window.removeEventListener("touchmove", onTouchMove);
-      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", mm);
+      window.removeEventListener("touchstart", tm);
+      window.removeEventListener("touchmove", tm);
+      canvas.removeEventListener("webglcontextlost", onLost);
+      video.pause();
+      video.removeAttribute("src"); // stop the load without an "Invalid URI" error
+      video.load();
     };
   }, []);
 
   return (
-    <>
-      {Array.from({ length: TRAIL }).map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => { wrapperRefs.current[i] = el; }}
-          style={{
-            position: "fixed",
-            transform: "translate(0%, 0%)",
-            zIndex: TRAIL - i,
-            opacity: 1,
-            pointerEvents: "none",
-          }}
-        >
-          <video
-            ref={(el) => { videoRefs.current[i] = el; }}
-            autoPlay
-            muted
-            playsInline
-            onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget)}
-            style={{
-              height: "40vh",
-              width: "auto",
-              objectFit: "cover",
-              border: "4px solid #111",
-              transform: "scaleX(-1)",
-              // background: "transparent",         // ← explicit
-
-              display: "block",
-            }}
-          />
-          {/* src is set per-browser in the mount effect (Safari → .mov, others → .webm) */}
-        </div>
-      ))}
-    </>
+    <canvas
+      ref={canvasRef}
+      style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", pointerEvents: "none", zIndex: 10 }}
+    />
   );
 }
