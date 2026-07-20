@@ -17,7 +17,7 @@
 }
 
 :root {
-  --bg: #E6E8E6;
+  --bg: #ECEBE4;
   --fg: #111111;
   --nav-size: 4rem;
   --nav-sub-size: 2.5rem;
@@ -74,9 +74,6 @@ button {
   margin: 0 auto;
   height: 100vh;
   overflow: hidden;
-  background-image: url("/bg.png");
-  background-size: cover;
-  background-position: center;
   display: grid;
   grid-template-columns: 1.15fr 1.6fr;
 }
@@ -238,7 +235,6 @@ button {
     height: auto;
     overflow: visible;
     display: block;
-    background-attachment: fixed;
   }
 
   .site-sidebar {
