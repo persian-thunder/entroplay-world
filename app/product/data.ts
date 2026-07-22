@@ -36,4 +36,10 @@ export const design: Record<string, Design> = {
             "/img/candy/3.png",
         ],
     },
+    fuegoux: {
+        title: "FuegoUX",
+        year: "2025",
+        description: "Placeholder description for FuegoUX.",
+        images: [],
+    },
 };

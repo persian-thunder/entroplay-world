@@ -3,5 +3,5 @@ import { design } from "./data";
 
 // No index view — jump straight to the first piece.
 export default function Page() {
-  redirect(`/design/${Object.keys(design)[0]}`);
+  redirect(`/product/${Object.keys(design)[0]}`);
 }

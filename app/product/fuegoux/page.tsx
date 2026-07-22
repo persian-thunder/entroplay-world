@@ -2,8 +2,8 @@ import VideoFeed, { VideoItem } from "@/components/VideoFeed";
 import { design } from "../data";
 import { notFound } from "next/navigation";
 
-export default function BatonPage() {
-  const ex = design["baton"];
+export default function FuegoUXPage() {
+  const ex = design["fuegoux"];
   if (!ex) notFound();
 
   const items: VideoItem[] = [

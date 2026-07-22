@@ -9,7 +9,7 @@ export type Performance = {
 };
 
 export const performances: Record<string, Performance> = {
-    algo: {
+    "algorithmic-bodies": {
         title: "Algorithmic Bodies",
         year: "2025",
         description: "Algorithmic Bodies examines the intersection of performance, interactive technology, and speculative futures. Led by Katherine Helen Fisher, this MeMoSa (Media Movement Salon) gathers works that dissolve the boundaries between the physical and digital, human and machine.\n\nAt Algorithmic Bodies, scuuulpt, a custom developed AR application, was presented as an experimental dance + emerging technology performance.\n\nAlgorithmic Bodies was performed at the Barnard Movement Lab on February 13th, 2025.",

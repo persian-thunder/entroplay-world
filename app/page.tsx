@@ -9,6 +9,8 @@ const SRC_MOV = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1775169141/o
 
 const HEIGHT_VH = 40; // video height as % of viewport height (matches the old "height: 40vh")
 const BORDER_PX = 4; // matches the old "4px solid #111"
+const OFFSET_X = 48; // px to push the video right of the cursor
+const OFFSET_Y = 48; // px to push the video below the cursor
 const INK: [number, number, number, number] = [0x11 / 255, 0x11 / 255, 0x11 / 255, 1];
 
 const VERT = `#version 300 es
@@ -153,7 +155,7 @@ export default function Home() {
 
       // back (i = TRAIL-1) → front (i = 0), matching the old z-order
       for (let i = TRAIL - 1; i >= 0; i--) {
-        const x = pos[i].x, y = pos[i].y; // top-left at the trail point, as before
+        const x = pos[i].x + OFFSET_X, y = pos[i].y + OFFSET_Y; // top-left offset right & down of the trail point
 
         // border frame — 4 solid #111 edges (keeps the cutout transparent inside)
         gl.uniform1i(uMode, 1);

@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Armon Naeini",
-  description: "Design, Exhibits, Research",
+  description: "Product, Exhibits, Research",
 };
 
 export default function RootLayout({
