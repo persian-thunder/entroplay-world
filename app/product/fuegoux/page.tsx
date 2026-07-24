@@ -8,7 +8,7 @@ export default function FuegoUXPage() {
 
   const items: VideoItem[] = [
     ...(ex.youtubeIds?.map((id) => ({ type: "youtube" as const, id })) ?? []),
-    ...(ex.videos?.map((v) => ({ type: "vimeo" as const, id: v.vimeoId, caption: v.caption })) ?? []),
+    ...(ex.videos?.map((v) => ({ type: "vimeo" as const, id: v.vimeoId, caption: v.caption, background: true, aspect: 62.8125 })) ?? []),
     ...(ex.images?.map((src) => ({ type: "image" as const, src })) ?? []),
   ];
 
