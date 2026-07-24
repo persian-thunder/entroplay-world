@@ -36,4 +36,11 @@ export const design: Record<string, Design> = {
             "/img/candy/3.png",
         ],
     },
+    fuegoux: {
+        title: "FuegoUX",
+        year: "2025",
+        description: "Design + development --> Figma, After Effects, Illustrator, WebGL/ThreeJS, NextJS, Sanity",
+        images: [],
+        videos: [{ vimeoId: "1212471990" }],
+    },
 };

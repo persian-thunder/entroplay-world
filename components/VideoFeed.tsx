@@ -3,12 +3,12 @@
 import { useState, useCallback } from "react";
 
 export type VideoItem =
-  | { type: "vimeo"; id: string; title?: string; caption?: string }
+  | { type: "vimeo"; id: string; title?: string; caption?: string; background?: boolean; aspect?: number }
   | { type: "youtube"; id: string; title?: string; caption?: string }
   | { type: "image"; src: string };
 
 export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
-  const [grid, setGrid] = useState(false);
+  const [grid, setGrid] = useState(videos.length > 1);
   const [visible, setVisible] = useState(true);
   const [hoverList, setHoverList] = useState(false);
   const [hoverGrid, setHoverGrid] = useState(false);
@@ -67,11 +67,11 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
 
           return (
             <div key={i} style={grid ? {} : { marginBottom: "2.75rem" }}>
-              <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, background: "#eee" }}>
+              <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
                 {v.type === "vimeo" ? (
                   <iframe
-                    src={`https://player.vimeo.com/video/${v.id}`}
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                    src={`https://player.vimeo.com/video/${v.id}${v.background ? "?background=1&autoplay=1&muted=1&loop=1" : ""}`}
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: v.background ? "scale(1.03)" : undefined }}
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
                   />

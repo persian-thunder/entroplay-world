@@ -18,6 +18,11 @@ export default function BatonPage() {
         {ex.description.split("\n\n").map((para, i) => (
           <p key={i} style={{ marginBottom: "1rem" }}>{para}</p>
         ))}
+        <p style={{ marginBottom: "1rem" }}>
+          <a href="https://baton.media" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline", fontSize: "0.8em" }}>
+            Baton
+          </a>
+        </p>
         {ex.credits && (
           <p>
             {ex.credits.map((c, i) => (

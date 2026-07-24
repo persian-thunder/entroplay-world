@@ -1,3 +1,7 @@
+import { redirect } from "next/navigation";
+import { exhibitions } from "./data";
+
+// No index view — jump straight to the first piece.
 export default function Page() {
-  return <main>exhibitions</main>;
+  redirect(`/exhibitions/${Object.keys(exhibitions)[0]}`);
 }

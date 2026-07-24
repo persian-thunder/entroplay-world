@@ -15,15 +15,17 @@ const NAV = [
     href: "/art",
     sub: [
       { label: "Experimental Video", href: "/art/experimental" },
+      { label: "RØMANS", href: "/art/romans" },
       { label: "Real-time", href: "/art/generative" },
     ],
   },
   {
-    label: "Design",
-    href: "/design",
+    label: "Product",
+    href: "/product",
     sub: [
-      { label: "Baton", href: "/design/baton" },
-      { label: "Rare Candy", href: "/design/rare-candy" },
+      { label: "Baton", href: "/product/baton" },
+      { label: "FuegoUX", href: "/product/fuegoux" },
+      { label: "Rare Candy", href: "/product/rare-candy" },
     ],
   },
   {
@@ -41,7 +43,7 @@ const NAV = [
     label: "Performances",
     href: "/performances",
     sub: [
-      { label: "Algorithmic Bodies", href: "/performances/algo" },
+      { label: "Algorithmic Bodies", href: "/performances/algorithmic-bodies" },
       { label: "ID Pt. I", href: "/performances/id" },
     ],
   },
