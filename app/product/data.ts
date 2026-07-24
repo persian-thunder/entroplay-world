@@ -39,7 +39,8 @@ export const design: Record<string, Design> = {
     fuegoux: {
         title: "FuegoUX",
         year: "2025",
-        description: "Placeholder description for FuegoUX.",
+        description: "I designed and built this site end to end. Motion in After Effects, interface in Figma, and a Next.js front end running custom WebGL + WebGPU shaders through Three.js.",
         images: [],
+        videos: [{ vimeoId: "1212471990" }],
     },
 };

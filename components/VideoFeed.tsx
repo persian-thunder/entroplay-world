@@ -8,7 +8,7 @@ export type VideoItem =
   | { type: "image"; src: string };
 
 export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
-  const [grid, setGrid] = useState(true);
+  const [grid, setGrid] = useState(videos.length > 1);
   const [visible, setVisible] = useState(true);
   const [hoverList, setHoverList] = useState(false);
   const [hoverGrid, setHoverGrid] = useState(false);
