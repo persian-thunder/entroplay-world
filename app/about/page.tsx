@@ -25,15 +25,13 @@ const bio = (
     <p style={{ marginTop: "1.25rem" }}>
       <a href="https://linkedin.com/in/armonnaeini" target="_blank" rel="noopener noreferrer" style={linkStyle}>LinkedIn</a>
       {" · "}
-      <a href="/files/resume.pdf" target="_blank" rel="noopener noreferrer" style={linkStyle}>Resume</a>
-      {" · "}
-      <a href="/files/cv.pdf" target="_blank" rel="noopener noreferrer" style={linkStyle}>CV</a>
-      {" · "}
       <a href="https://instagram.com/entroplay" target="_blank" rel="noopener noreferrer" style={linkStyle}>Instagram</a>
       {" · "}
       <a href="https://github.com/persian-thunder" target="_blank" rel="noopener noreferrer" style={linkStyle}>Github</a>
       {" · "}
       <a href="mailto:armon@entroplay.world" target="_blank" rel="noopener noreferrer" style={linkStyle}>Email</a>
+      {" · "}
+      <a href="/files/cv_resume_naeini.pdf" target="_blank" rel="noopener noreferrer" style={linkStyle}>Resume + CV</a>
     </p>
   </div>
 );

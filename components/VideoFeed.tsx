@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export type VideoItem =
   | { type: "vimeo"; id: string; title?: string; caption?: string; background?: boolean; aspect?: number }
@@ -12,6 +12,14 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
   const [visible, setVisible] = useState(true);
   const [hoverList, setHoverList] = useState(false);
   const [hoverGrid, setHoverGrid] = useState(false);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setLightbox(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   const switchView = useCallback((toGrid: boolean) => {
     if (toGrid === grid) return;
@@ -53,7 +61,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
           if (v.type === "image") {
             if (grid) {
               return (
-                <div key={i} style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden" }}>
+                <div key={i} onClick={() => setLightbox(v.src)} style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", cursor: "zoom-in" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={v.src} alt="" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
@@ -61,7 +69,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
             }
             return (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={v.src} alt="" style={{ display: "block", width: "100%", marginBottom: "2.75rem" }} />
+              <img key={i} src={v.src} alt="" onClick={() => setLightbox(v.src)} style={{ display: "block", width: "100%", marginBottom: "2.75rem", cursor: "zoom-in" }} />
             );
           }
 
@@ -91,6 +99,16 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
           );
         })}
       </div>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(17,17,17,0.92)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "zoom-out", padding: "2.5vw" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={lightbox} alt="" style={{ maxWidth: "95vw", maxHeight: "95vh", objectFit: "contain", boxShadow: "0 0 40px rgba(0,0,0,0.5)" }} />
+        </div>
+      )}
     </div>
   );
 }
