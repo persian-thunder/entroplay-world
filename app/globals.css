@@ -91,6 +91,7 @@ button {
 .site-nav {
   --nav-size: 4rem;
   --nav-sub-size: 2.5rem;
+  display: none;
 }
 
 .nav-sublist {

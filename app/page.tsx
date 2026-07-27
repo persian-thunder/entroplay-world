@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-const TRAIL = 30;
+const TRAIL = 22;
 const LERPS = [
-  0.16, 0.14, 0.12, 0.11, 0.1, 0.09, 0.09, 0.08, 0.08, 0.07,
-  0.07, 0.068, 0.066, 0.064, 0.062, 0.06, 0.059, 0.058, 0.057, 0.056,
-  0.055, 0.054, 0.053, 0.052, 0.051, 0.05, 0.05, 0.049, 0.048, 0.047,
+  0.22, 0.2, 0.18, 0.17, 0.16, 0.15, 0.145, 0.14, 0.135, 0.13, 0.125,
+  0.12, 0.118, 0.115, 0.112, 0.11, 0.108, 0.105, 0.102, 0.1, 0.098, 0.095,
 ];
 const SRC_WEBM = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1774730002/output_d6ptsb.webm";
 const SRC_MOV = "https://res.cloudinary.com/dqv4mu7u6/video/upload/v1775169141/output-safari_rmccqx.mov";
