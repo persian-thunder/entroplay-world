@@ -110,6 +110,47 @@ button {
   overflow: hidden;
 }
 
+/* ---- page transitions ---------------------------------------------------------------
+   The two directions are given different curves on purpose. Leaving accelerates away
+   (0.45,0,1,1) and is over quickly; arriving decelerates in on an expo-out tail
+   (0.16,1,0.3,1) with the blocks staggered behind it. A single symmetric ease both ways
+   is what makes a transition feel stock. */
+.pt-out {
+  opacity: 0;
+  transform: translate3d(0, -8px, 0) scale(0.985);
+  transition:
+    opacity 190ms cubic-bezier(0.45, 0, 1, 1),
+    transform 190ms cubic-bezier(0.45, 0, 1, 1);
+  pointer-events: none;
+}
+
+@keyframes pt-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* applied to whichever level actually holds the page's blocks — see PageTransition */
+.pt-block {
+  animation: pt-rise 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--pt-d, 0ms);
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-out {
+    transition: none;
+  }
+  .pt-block {
+    animation: none;
+  }
+}
+
 .home-mark {
   position: fixed;
   bottom: 1rem;
