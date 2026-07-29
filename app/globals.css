@@ -84,14 +84,17 @@ button {
   height: 100vh;
   min-height: 0;
   padding: 4rem 2.5rem 3rem 3rem;
-  z-index: 1;
+  /* above the sketch canvas (z-index 10) so the nav type stays legible when the
+     trail passes over it. the column has no background, so the canvas still shows
+     through everywhere except the glyphs themselves. */
+  z-index: 20;
   overflow-y: auto;
 }
 
 .site-nav {
   --nav-size: 4rem;
   --nav-sub-size: 2.5rem;
-  display: none;
+  display: block;
 }
 
 .nav-sublist {
@@ -110,7 +113,11 @@ button {
 .home-mark {
   position: fixed;
   bottom: 1rem;
-  left: 2rem;
+  /* pinned bottom-left. positioned with left/right only — `transform` is owned by
+     home-spin, so nudging this with translate would fight the animation */
+  left: 1.25rem;
+  right: auto;
+  margin-inline: 0;
   z-index: 1000;
   font-family: "Bit", monospace;
   font-size: 4rem;
@@ -263,8 +270,6 @@ button {
   }
 
   .home-mark {
-    left: auto;
-    right: 0.85rem;
     bottom: 0.75rem;
     font-size: 2.7rem;
   }
