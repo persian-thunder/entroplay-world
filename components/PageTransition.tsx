@@ -34,11 +34,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
     el.scrollTop = 0;
     if (reduced()) return;
 
-    // Stagger the page's own blocks. Most pages wrap everything in one scroll container,
-    // so reach a level in when that is the case — otherwise the "stagger" is a single
-    // element and collapses straight back into a flat fade.
+    // Stagger the page's own blocks. Pages wrap their content in a scroll container —
+    // sometimes more than one deep — so walk past single-child wrappers until a level
+    // with actual siblings turns up. Staggering a lone wrapper is just a flat fade again.
+    // Stops on a leaf (a single-photo page really has one block, and that is correct).
     let blocks = Array.from(el.children) as HTMLElement[];
-    if (blocks.length === 1 && blocks[0].children.length > 1) {
+    for (let d = 0; d < 4 && blocks.length === 1 && blocks[0].children.length > 1; d++) {
       blocks = Array.from(blocks[0].children) as HTMLElement[];
     }
 

@@ -7,6 +7,33 @@ export type VideoItem =
   | { type: "youtube"; id: string; title?: string; caption?: string }
   | { type: "image"; src: string };
 
+// Strip Vimeo's chrome: no avatar/title/byline overlay, no CC/speed/transcript/
+// PiP/cast buttons, no Vimeo logo. Scrubber tinted to the site's paper tone.
+const VIMEO_CHROME = [
+  "title=0",
+  "byline=0",
+  "portrait=0",
+  "badge=0",
+  "vimeo_logo=0",
+  "cc=0",
+  "speed=0",
+  "transcript=0",
+  "pip=0",
+  "airplay=0",
+  "chromecast=0",
+  "watch_full_video=0",
+  "playsinline=1",
+  "dnt=1",
+  "color=E6E8E6",
+].join("&");
+
+function vimeoSrc(id: string, background?: boolean) {
+  const params = background
+    ? "background=1&autoplay=1&muted=1&loop=1&dnt=1"
+    : VIMEO_CHROME;
+  return `https://player.vimeo.com/video/${id}?${params}`;
+}
+
 export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
   const [grid, setGrid] = useState(videos.length > 1);
   const [visible, setVisible] = useState(true);
@@ -78,7 +105,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
               <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
                 {v.type === "vimeo" ? (
                   <iframe
-                    src={`https://player.vimeo.com/video/${v.id}${v.background ? "?background=1&autoplay=1&muted=1&loop=1" : ""}`}
+                    src={vimeoSrc(v.id, v.background)}
                     style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: v.background ? "scale(1.03)" : undefined }}
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
