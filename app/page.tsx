@@ -32,53 +32,40 @@ const RIPPLE_AMP = 300;
 const RIPPLE_DAMP = 1.25;
 const RIPPLE_LIFE = 6.8;
 
-// press-hold datamosh
-//   1. motion vectors estimated from the CONTENT (block matching), not from the pointer
-//   2. one vector per macroblock, sampled NEAREST — any interpolation between blocks
-//      reintroduces a smooth per-pixel gradient, which is the tell of a fake
-//   3. the vector walk COMPOUNDED over several taps with no new pixels arriving; that
-//      compounding is what makes the picture melt along its own motion rather than smear
-const MOSH_BLOCK = 48; // px macroblock edge — coarse grain; cost of the flow pass scales as 1/BLOCK^2
-const MOSH_SEARCH = 12; // px block-match search radius
-const MOSH_STEP = 4; // px coarse search step (radius/step must stay a small integer)
-const MOSH_GAIN = 0.05; // vector multiplier — 1.0 = true motion compensation
-const MOSH_TAPS = 7; // compounded vector walks at full hold; 1 = a single P-frame
-const MOSH_PERSIST = 0.21; // 0..1 how hard a pixel resists being overwritten by emptier content
-const MOSH_SHARPEN = 0.45; // 0..1 unsharp mask at display time
-const MOSH_STATIC = 0.86; // best SAD must beat the zero-vector SAD by this much to count as motion
-const MOSH_QUANT = 1; // 0..1 coarse colour quantisation (low-bitrate plateaus)
-const MOSH_BLOCKVIS = 0.64; // 0..1 visibility of the DCT block grid
-const MOSH_RGB_SPLIT = 0.38; // 0..1 spread between the per-channel R/G/B motion vectors
-const MOSH_CHROMA = 1; // 0..1 how far chroma follows its own vector instead of luma's
-const MOSH_CHROMA_SUB = 6; // chroma block size multiple — 2 = 4:2:0, the source of colour bleed
-const MOSH_CHROMA_LEAD = 4; // chroma vector gain vs luma; >1 makes colour overshoot the shape
-const MOSH_TINT = 0.28; // 0..1 tint blocks by motion DIRECTION (the flow-field hue wheel)
-// after release the live video ribbon becomes the eraser — wherever it passes over the
-// painted canvas it eats the pixels, and its own luminance drives how fast
-const ERASE_RATE = 0.97; // 0..1 chance a cell is knocked out per frame under full coverage
-const ERASE_GRAIN = 3; // px of the SMALLEST erase cell
-const ERASE_GRAIN_VAR = 18; // largest cell = GRAIN * this. one fixed cell size reads as
-// per-pixel static, so the size is picked per region and the breakup varies — here from
-// 3px up to 54px slabs
-const ERASE_SMEAR = 16; // px survivors are dragged along the motion field as they go
-const ERASE_DARK = 0.12; // erosion rate under the video's darkest pixels vs its brightest
-// 0..1 how far the black frame edges are held back from the canvas. 0 = they commit at
-// full strength, 1 = they never commit at all. At 0.95 the ink lays down at 5% alpha:
-// the frames still smear and erode with everything else, but 88 ink rects a frame stop
-// stacking into black. Only the ink is scaled — it is picked out by saturation, so the
-// video is untouched.
+// datamosh
+//   motion vectors come from block matching
+//   one vector per macroblock
+//   vector walk compounded over several taps with no new pixels arriving making pic melt
+const MOSH_BLOCK = 48;
+const MOSH_SEARCH = 12;
+const MOSH_STEP = 4; 
+const MOSH_GAIN = 0.05;
+const MOSH_TAPS = 7;
+const MOSH_PERSIST = 0.21;
+const MOSH_SHARPEN = 0.45;
+const MOSH_STATIC = 0.86;
+const MOSH_QUANT = 1;
+const MOSH_BLOCKVIS = 0.64;
+const MOSH_RGB_SPLIT = 0.38;
+const MOSH_CHROMA = 1; 
+const MOSH_CHROMA_SUB = 6; 
+const MOSH_CHROMA_LEAD = 4; 
+const MOSH_TINT = 0.28; 
+
+const ERASE_RATE = 0.97;
+const ERASE_GRAIN = 3;
+const ERASE_GRAIN_VAR = 18;
+
+const ERASE_SMEAR = 16;
+const ERASE_DARK = 0.12;
+
 const INK_REJECT = 0.95;
-const MOSH_ATTACK = 0.16; // s to ramp in on press
-const MOSH_RELEASE = 0.12; // s to ramp out on release — the "keyframe arrives" snap back
-const TAP_SLOP = 34; // px of travel still counted as a click (fires a ripple instead)
+const MOSH_ATTACK = 0.16;
+const MOSH_RELEASE = 0.12;
+const TAP_SLOP = 34;
 
 const SEARCH_R = Math.round(MOSH_SEARCH / MOSH_STEP); // candidates per axis = 2R+1
 
-// ---- live tuning ---------------------------------------------------------------------
-// Everything above stays the committed default. DEFAULTS is copied into a mutable object
-// the render loop reads every frame, so the panel retunes without a reload.
-// MOSH_SEARCH / MOSH_STEP are deliberately absent: SEARCH_R is baked into FLOW_FRAG as a
-// #define, so moving them at runtime would desync the shader's search from uRange.
 const DEFAULTS: Params = {
   TRAIL, TRAIL_SPEED: 0.85,
   PLAYBACK_RATE, HEIGHT_VH, BORDER_PX, OFFSET_X, OFFSET_Y,
@@ -91,7 +78,6 @@ const DEFAULTS: Params = {
   INK_REJECT, TAP_SLOP,
 };
 
-// flip to true to bring the tuning panel back (dev only either way)
 const SHOW_CONTROLS = false;
 
 const SCHEMA: ParamSpec[] = [
