@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import VimeoPlayer from "./VimeoPlayer";
 
 export type VideoItem =
   | { type: "vimeo"; id: string; title?: string; caption?: string; background?: boolean; aspect?: number }
@@ -102,6 +103,9 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
 
           return (
             <div key={i} style={grid ? {} : { marginBottom: "2.75rem" }}>
+              {v.type === "vimeo" && !v.background ? (
+                <VimeoPlayer id={v.id} aspect={v.aspect ?? 56.25} />
+              ) : (
               <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
                 {v.type === "vimeo" ? (
                   <iframe
@@ -119,6 +123,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
                   />
                 )}
               </div>
+              )}
               {v.caption && (
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.5rem" }}>{v.caption}</p>
               )}
