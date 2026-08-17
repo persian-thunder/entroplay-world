@@ -16,7 +16,7 @@ const EMBED_PARAMS = [
   "dnt=1",
 ].join("&");
 
-const PAPER = "#ECEBE4";
+const PAPER = "#FFFFFA";
 const INK = "#111111";
 const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 
@@ -168,7 +168,7 @@ export default function VimeoPlayer({
         width: "100%",
         background: INK,
         overflow: "hidden",
-        border: `1px solid ${INK}`,
+        border: `2px solid ${INK}`,
       }}
     >
       <iframe
@@ -212,7 +212,7 @@ export default function VimeoPlayer({
               width: "3.25rem",
               height: "3.25rem",
               background: PAPER,
-              border: `1px solid ${INK}`,
+              border: `2px solid ${INK}`,
               transition: `transform 0.5s ${SPRING}, opacity 0.4s ease`,
               transform: hover ? "scale(1.12)" : "scale(1)",
               opacity: ready ? 1 : 0,
@@ -235,7 +235,7 @@ export default function VimeoPlayer({
           gap: "0.7rem",
           padding: "0.45rem 0.7rem",
           background: PAPER,
-          borderTop: `1px solid ${INK}`,
+          borderTop: `2px solid ${INK}`,
           color: INK,
           opacity: barVisible ? 1 : 0,
           transform: barVisible ? "translateY(0)" : "translateY(100%)",
