@@ -1,7 +1,36 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import VimeoPlayer from "./VimeoPlayer";
+
+// Gate an embed on proximity to the viewport. `loading="lazy"` alone still lets the
+// browser create the iframe and run its document; this keeps the iframe out of the DOM
+// entirely until it's worth paying for. 400px of margin so it's warm before it's seen.
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    // No IO (old Safari, jsdom): fail open and render the embed rather than hide it.
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setInView(true); // one-way latch — never unmount a player mid-watch
+        io.disconnect();
+      },
+      { rootMargin: "400px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return { ref, inView };
+}
 
 export type VideoItem =
   | { type: "vimeo"; id: string; title?: string; caption?: string; background?: boolean; aspect?: number }
@@ -33,6 +62,47 @@ function vimeoSrc(id: string, background?: boolean) {
     ? "background=1&autoplay=1&muted=1&loop=1&dnt=1"
     : VIMEO_CHROME;
   return `https://player.vimeo.com/video/${id}?${params}`;
+}
+
+// The raw-iframe path: Vimeo background loops and YouTube. Held out of the DOM until the
+// frame nears the viewport, so a grid of four costs one embed on load instead of four.
+function Embed({ v }: { v: Extract<VideoItem, { type: "vimeo" | "youtube" }> }) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const isVimeo = v.type === "vimeo";
+  const background = isVimeo && v.background;
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "relative",
+        paddingBottom: `${isVimeo && v.aspect ? v.aspect : 56.25}%`,
+        height: 0,
+        background: "#eee",
+        overflow: "hidden",
+        border: background ? "1px solid #111" : undefined,
+      }}
+    >
+      {inView &&
+        (isVimeo ? (
+          <iframe
+            src={vimeoSrc(v.id, v.background)}
+            loading="lazy"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: background ? "scale(1.03)" : undefined }}
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <iframe
+            src={`https://www.youtube.com/embed/${v.id}`}
+            loading="lazy"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ))}
+    </div>
+  );
 }
 
 export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
@@ -106,23 +176,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
               {v.type === "vimeo" && !v.background ? (
                 <VimeoPlayer id={v.id} aspect={v.aspect ?? 56.25} />
               ) : (
-              <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
-                {v.type === "vimeo" ? (
-                  <iframe
-                    src={vimeoSrc(v.id, v.background)}
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: v.background ? "scale(1.03)" : undefined }}
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${v.id}`}
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                )}
-              </div>
+                <Embed v={v} />
               )}
               {v.caption && (
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.5rem" }}>{v.caption}</p>
