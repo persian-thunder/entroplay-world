@@ -185,12 +185,16 @@ export default function Nav() {
 const styles = {
   link: {
     display: "block",
+    // shrink-wrap the hit box to the glyphs — a full-width block would leave the
+    // pointer cursor live across the empty column beside each label.
+    width: "fit-content",
     color: "#111",
     textDecoration: "none",
     lineHeight: .825,
   } as React.CSSProperties,
   button: {
     display: "block",
+    width: "fit-content",
     background: "none",
     border: "none",
     padding: 0,
@@ -201,6 +205,7 @@ const styles = {
   },
   sublink: {
     display: "block",
+    width: "fit-content",
     fontFamily: "'Mondwest', serif",
     fontSize: "var(--nav-sub-size)",
     color: "#111",
