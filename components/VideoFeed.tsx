@@ -109,7 +109,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
               <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
                 {v.type === "vimeo" ? (
                   <iframe
-                    src={vimeoSrc(v.id, v.background)}
+                    src={`https://player.vimeo.com/video/${v.id}${v.background ? "?background=1&autoplay=1&muted=1&loop=1&playsinline=1&controls=0&dnt=1" : ""}`}
                     style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: v.background ? "scale(1.03)" : undefined }}
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
