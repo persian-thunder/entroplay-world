@@ -1,11 +1,39 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import VimeoPlayer from "./VimeoPlayer";
 
 export type VideoItem =
   | { type: "vimeo"; id: string; title?: string; caption?: string; background?: boolean; aspect?: number }
   | { type: "youtube"; id: string; title?: string; caption?: string }
   | { type: "image"; src: string };
+
+// Strip Vimeo's chrome: no avatar/title/byline overlay, no CC/speed/transcript/
+// PiP/cast buttons, no Vimeo logo. Scrubber tinted to the site's paper tone.
+const VIMEO_CHROME = [
+  "title=0",
+  "byline=0",
+  "portrait=0",
+  "badge=0",
+  "vimeo_logo=0",
+  "cc=0",
+  "speed=0",
+  "transcript=0",
+  "pip=0",
+  "airplay=0",
+  "chromecast=0",
+  "watch_full_video=0",
+  "playsinline=1",
+  "dnt=1",
+  "color=E6E8E6",
+].join("&");
+
+function vimeoSrc(id: string, background?: boolean) {
+  const params = background
+    ? "background=1&autoplay=1&muted=1&loop=1&dnt=1"
+    : VIMEO_CHROME;
+  return `https://player.vimeo.com/video/${id}?${params}`;
+}
 
 export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
   const [grid, setGrid] = useState(videos.length > 1);
@@ -75,6 +103,9 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
 
           return (
             <div key={i} style={grid ? {} : { marginBottom: "2.75rem" }}>
+              {v.type === "vimeo" && !v.background ? (
+                <VimeoPlayer id={v.id} aspect={v.aspect ?? 56.25} />
+              ) : (
               <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
                 {v.type === "vimeo" ? (
                   <iframe
@@ -92,6 +123,7 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
                   />
                 )}
               </div>
+              )}
               {v.caption && (
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.5rem" }}>{v.caption}</p>
               )}

@@ -5,14 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useNavContext } from "@/components/NavContext";
 
+// `deco` is the kaomoji that pops in beside each label on hover — one per section, so the
+// nav has personalities rather than a uniform hover state.
 const NAV = [
   {
     label: "Armon Naeini",
     href: "/about",
+    deco: "(・ᴗ・)",
   },
   {
     label: "Art",
     href: "/art",
+    deco: "(๑˘ᴗ˘๑)",
     sub: [
       { label: "Experimental Video", href: "/art/experimental" },
       { label: "RØMANS", href: "/art/romans" },
@@ -22,6 +26,7 @@ const NAV = [
   {
     label: "Product",
     href: "/product",
+    deco: "(•̀ᴗ•́)ﻭ",
     sub: [
       { label: "Baton", href: "/product/baton" },
       { label: "FuegoUX", href: "/product/fuegoux" },
@@ -31,6 +36,7 @@ const NAV = [
   {
     label: "Exhibitions",
     href: "/exhibitions",
+    deco: "(◕‿◕✿)",
     sub: [
       { label: "DTHRR", href: "/exhibitions/dthrr" },
       { label: "ID Pt. II", href: "/exhibitions/id2" },
@@ -42,6 +48,7 @@ const NAV = [
   {
     label: "Performances",
     href: "/performances",
+    deco: "♪(˘ᴗ˘)♪",
     sub: [
       { label: "Algorithmic Bodies", href: "/performances/algorithmic-bodies" },
       { label: "ID Pt. I", href: "/performances/id" },
@@ -50,6 +57,7 @@ const NAV = [
   {
     label: "Research",
     href: "/research",
+    deco: "(ᴗ˳ᴗ)",
     sub: [
       { label: "chartty", href: "/research/charttty" },
       { label: "Datamosh", href: "/research/datamosh" },
@@ -85,31 +93,41 @@ function HoverStar({ filled, gap = "0.25em", top = "1px" }: { filled?: boolean; 
   );
 }
 
-function NavLink({ href, active, children, style, gap, starTop }: { href: string; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string; starTop?: string }) {
+// The shift lives in CSS (.nav-item) so hover runs on the compositor. Scale is gone
+// deliberately — scaling type changes its optical weight and softens the stems mid-flight.
+function NavLink({ href, active, children, style, gap, starTop, deco }: { href: string; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string; starTop?: string; deco?: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
       href={href}
-      style={{ ...style, transform: hovered ? "scale(1.1)" : "scale(1)", transformOrigin: "left center", transition: "transform 150ms ease" }}
+      className="nav-item"
+      data-active={active ? "true" : undefined}
+      style={style}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} top={starTop} />}
+      <span className="nav-label">{children}</span>
+      {(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} top={starTop} />}
+      {deco && hovered && <span className="nav-deco" aria-hidden="true">{deco}</span>}
     </Link>
   );
 }
 
-function NavButton({ onClick, active, children, style, gap }: { onClick: () => void; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string }) {
+function NavButton({ onClick, active, children, style, gap, deco }: { onClick: () => void; active?: boolean; children: React.ReactNode; style: React.CSSProperties; gap?: string; deco?: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <button
       type="button"
+      className="nav-item"
+      data-active={active ? "true" : undefined}
       onClick={onClick}
-      style={{ ...style, transform: hovered ? "scale(1.1)" : "scale(1)", transformOrigin: "left center", transition: "transform 150ms ease" }}
+      style={style}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {children}{(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} />}
+      <span className="nav-label">{children}</span>
+      {(hovered || active) && <HoverStar key={active ? "active" : "hover"} filled={active} gap={gap} />}
+      {deco && hovered && <span className="nav-deco" aria-hidden="true">{deco}</span>}
     </button>
   );
 }
@@ -133,10 +151,10 @@ export default function Nav() {
     setOpen((prev) => (prev === href ? null : href));
 
   const navItems = (
-    NAV.map(({ label, href, sub }) =>
+    NAV.map(({ label, href, sub, deco }) =>
       sub ? (
         <div key={href}>
-          <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button} gap="0.1em">
+          <NavButton onClick={() => toggle(href)} active={isActive(href)} style={styles.button} gap="0.1em" deco={deco}>
             {label}
           </NavButton>
           {open === href && (
@@ -150,7 +168,7 @@ export default function Nav() {
           )}
         </div>
       ) : (
-        <NavLink key={href} href={href} active={isActive(href)} style={styles.link} gap="0.1em">
+        <NavLink key={href} href={href} active={isActive(href)} style={styles.link} gap="0.1em" deco={deco}>
           {label}
         </NavLink>
       )
@@ -167,12 +185,16 @@ export default function Nav() {
 const styles = {
   link: {
     display: "block",
+    // shrink-wrap the hit box to the glyphs — a full-width block would leave the
+    // pointer cursor live across the empty column beside each label.
+    width: "fit-content",
     color: "#111",
     textDecoration: "none",
     lineHeight: .825,
   } as React.CSSProperties,
   button: {
     display: "block",
+    width: "fit-content",
     background: "none",
     border: "none",
     padding: 0,
@@ -183,6 +205,7 @@ const styles = {
   },
   sublink: {
     display: "block",
+    width: "fit-content",
     fontFamily: "'Mondwest', serif",
     fontSize: "var(--nav-sub-size)",
     color: "#111",
