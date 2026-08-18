@@ -176,7 +176,23 @@ export default function VideoFeed({ videos }: { videos: VideoItem[] }) {
               {v.type === "vimeo" && !v.background ? (
                 <VimeoPlayer id={v.id} aspect={v.aspect ?? 56.25} />
               ) : (
-                <Embed v={v} />
+              <div style={{ position: "relative", paddingBottom: `${v.type === "vimeo" && v.aspect ? v.aspect : 56.25}%`, height: 0, background: "#eee", overflow: "hidden", border: v.type === "vimeo" && v.background ? "1px solid #111" : undefined }}>
+                {v.type === "vimeo" ? (
+                  <iframe
+                    src={`https://player.vimeo.com/video/${v.id}${v.background ? "?background=1&autoplay=1&muted=1&loop=1&playsinline=1&controls=0&dnt=1" : ""}`}
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", transform: v.background ? "scale(1.03)" : undefined }}
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${v.id}`}
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
+              </div>
               )}
               {v.caption && (
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.5rem" }}>{v.caption}</p>
