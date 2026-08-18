@@ -12,15 +12,15 @@ const bio = (
   <div className="about-copy">
     <p>
       Armon Naeini is an Iranian-American creative technologist, artist, designer and educator.
-      His work and research engage metaphysical inquiry through experimental technologies, exploring the surrealism embedded in human identity and experience. Armon leverages various programming languages to develop his work spanning interactive installations, AR/XR applications, real-time graphics, LED design, post-production, web experiences, and microcomputing.
+      His research engages metaphysical inquiry through experimental technologies, exploring the surrealism embedded in human identity. Armon leverages various programming languages to develop his work spanning interactive installations, AR/XR/MR, real-time graphics, LED mapping, projection & laser mapping, post-production, interactive web, and microcomputing.
       <br /><br />
-      Currently, Armon is a professor at the School of Visual Arts instructing creative code to juniors & seniors in the BFA Design department. He is also currently working as a freelance product designer & design technologist.
+      Currently, Armon is a professor at the School of Visual Arts and the New York Institute of Technology where he teaches TouchDesigner, creative coding and HCI to both undergraduate and graduate students.
       <br /><br />
       Armon has exhibited his work at The Music Center LA, Secret Riso
-      Club, ZeroSpace, Meow Wolf, Center for Performance Research, NYU,
+      Club, ZeroSpace, Onassis ONX, Abrons Arts Center, Meow Wolf, Center for Performance Research, NYU,
       Newlab, Barnard Movement Lab, Times Square Billboards, School of
-      Visual Arts, Jacob&apos;s Pillow and has had his work featured in
-      the New York Times as well as NBC News.
+      Visual Arts, and Jacob&apos;s Pillow. His work has been featured in
+      The New York Times as well as NBC News.
     </p>
     <p style={{ marginTop: "1.25rem" }}>
       <a href="https://linkedin.com/in/armonnaeini" target="_blank" rel="noopener noreferrer" style={linkStyle}>LinkedIn</a>
