@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* `swap` over the default `block`: these two faces carry every word on the site, so
+   waiting on them means up to 3s of invisible text. Paint in the fallback, swap when ready. */
 @font-face {
   font-family: "Bit";
   src: url("/fonts/bit.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -14,6 +17,7 @@
   src: url("/fonts/mondwest.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {
